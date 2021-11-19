@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.stream.StreamSupport;
 
 class ImageEncode {
     public static void main(String[] args) {
@@ -17,13 +19,19 @@ class ImageEncode {
             FileInputStream fis = new FileInputStream(file);
             byte[] data = new byte[fis.available()];
             fis.read(data);
+            System.out.println("Byte array data of image: ");
+            System.out.println(Arrays.toString(data));
             String[] bitData = new String[data.length];
             for (int i = 0; i < data.length; i++) {
                 bitData[i] = (String.format("%8s", Integer.toBinaryString(data[i] & 0xFF)).replace(' ', '0'));
                 // System.out.println(bitData[i]);
             }
+            System.out.println();
+            System.out.println("Length of byte array data: ");
             System.out.println(data.length);
             String s = Base64.getEncoder().encodeToString(data);
+            System.out.println();
+            System.out.println("Inbuilt encrpted string");
             System.out.println(s);
 
             int len = data.length;
@@ -47,6 +55,8 @@ class ImageEncode {
             }
             map.put(62, '+');
             map.put(63, '/');
+            System.out.println();
+            System.out.println("Map values: the base_64 table: ");
             System.out.println(map);
             int j;
             for (int i = 0; i < len; i++) {
@@ -97,12 +107,15 @@ class ImageEncode {
             }
             if (flag2) {
                 encodedString.append('=');
+                encodedString.append('=');
+
             }
             if (flag4) {
                 encodedString.append('=');
-                encodedString.append('=');
             }
-            System.out.println(encodedString.toString());
+            System.out.println();
+            System.out.println("My enrypted string");
+            System.out.println(encodedString.toString()); // my encoded string
             // System.out.println(values);
 
             fis.close();
