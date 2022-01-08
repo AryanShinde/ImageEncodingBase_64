@@ -1,13 +1,15 @@
-import javax.sound.sampled.SourceDataLine;
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.stream.StreamSupport;
 
 class ImageEncode {
     public static void main(String[] args) {
@@ -24,15 +26,14 @@ class ImageEncode {
             String[] bitData = new String[data.length];
             for (int i = 0; i < data.length; i++) {
                 bitData[i] = (String.format("%8s", Integer.toBinaryString(data[i] & 0xFF)).replace(' ', '0'));
-                // System.out.println(bitData[i]);
             }
-            System.out.println();
-            System.out.println("Length of byte array data: ");
-            System.out.println(data.length);
+            // System.out.println();
+            // System.out.println("Length of byte array data: ");
+            // System.out.println(data.length);
             String s = Base64.getEncoder().encodeToString(data);
-            System.out.println();
-            System.out.println("Inbuilt encrpted string");
-            System.out.println(s);
+            System.out.println(Arrays.toString(bitData));
+            // System.out.println("Inbuilt encrpted string");
+            // System.out.println(s);
 
             int len = data.length;
             int size = (len * 8) / 6;
@@ -56,8 +57,8 @@ class ImageEncode {
             map.put(62, '+');
             map.put(63, '/');
             System.out.println();
-            System.out.println("Map values: the base_64 table: ");
-            System.out.println(map);
+            // System.out.println("Map values: the base_64 table: ");
+            // System.out.println(map);
             int j;
             for (int i = 0; i < len; i++) {
                 int sizeStr = str.length();
@@ -113,11 +114,10 @@ class ImageEncode {
             if (flag4) {
                 encodedString.append('=');
             }
-            System.out.println();
-            System.out.println("My enrypted string");
+            // System.out.println();
+            // System.out.println("My enrypted string");
             System.out.println(encodedString.toString()); // my encoded string
-            // System.out.println(values);
-
+            decodeString(encodedString.toString(), map);
             fis.close();
 
         } catch (Exception e) {
@@ -125,4 +125,57 @@ class ImageEncode {
         }
 
     }
+
+    public static void decodeString(String encodedString, HashMap<Integer, Character> map) throws IOException {
+        System.out.println("heyy??");
+        ArrayList<Integer> values = new ArrayList<>();
+        for (int i = 0; i < encodedString.length(); i++) {
+            for (int num : map.keySet()) {
+                if (encodedString.charAt(i) == '=') {
+                    break;
+                }
+                if (map.get(num) == encodedString.charAt(i)) {
+                    values.add(num);
+                }
+            }
+        }
+        ArrayList<String> bitData = new ArrayList<>();
+        for (int i = 0; i < values.size(); i++) {
+            String s = String.format("%6s", Integer.toBinaryString(values.get(i) & 0xFF)).replace(' ', '0');
+            bitData.add(s);
+        }
+
+        StringBuilder str = new StringBuilder();
+        ArrayList<String> EightBit = new ArrayList<>();
+        for (int i = 0; i < bitData.size(); i++) {
+            for (int j = 0; j < bitData.get(i).length(); j++) {
+                str.append(bitData.get(i).charAt(j));
+                if (str.length() == 8) {
+                    String s = str.toString();
+                    EightBit.add(s);
+                    str = new StringBuilder();
+                }
+            }
+        }
+        System.out.println("heyy??");
+        byte val = (byte) Integer.parseInt("10001001", 2);
+        System.out.println(val);
+
+        ArrayList<Byte> ans = new ArrayList<>();
+        for (int i = 0; i < EightBit.size(); i++) {
+            byte b1 = (byte) Integer.parseInt(EightBit.get(i), 2);
+            ans.add(b1);
+        }
+        System.out.println(ans.size());
+        System.out.println(EightBit);
+        System.out.println(ans);
+        byte[] finalAns = new byte[ans.size()];
+        for (int i = 0; i < ans.size(); i++) {
+            finalAns[i] = ans.get(i);
+        }
+        ByteArrayInputStream bais = new ByteArrayInputStream(finalAns);
+        BufferedImage image = ImageIO.read(bais);
+        ImageIO.write(image, "png", new File("final_image.png"));
+    }
+
 }
