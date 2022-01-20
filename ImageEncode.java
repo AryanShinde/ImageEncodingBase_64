@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 
@@ -21,22 +20,15 @@ class ImageEncode {
             FileInputStream fis = new FileInputStream(file);
             byte[] data = new byte[fis.available()];
             fis.read(data);
-            System.out.println("Byte array data of image: ");
-            System.out.println(Arrays.toString(data));
             String[] bitData = new String[data.length];
             for (int i = 0; i < data.length; i++) {
                 bitData[i] = (String.format("%8s", Integer.toBinaryString(data[i] & 0xFF)).replace(' ', '0'));
             }
-            // System.out.println();
-            // System.out.println("Length of byte array data: ");
-            // System.out.println(data.length);
             String s = Base64.getEncoder().encodeToString(data);
-            System.out.println(Arrays.toString(bitData));
-            // System.out.println("Inbuilt encrpted string");
-            // System.out.println(s);
+            System.out.println("Inbuilt encrpted string");
+            System.out.println(s);
 
             int len = data.length;
-            int size = (len * 8) / 6;
             boolean flag2 = false;
             boolean flag4 = false;
 
@@ -57,8 +49,7 @@ class ImageEncode {
             map.put(62, '+');
             map.put(63, '/');
             System.out.println();
-            // System.out.println("Map values: the base_64 table: ");
-            // System.out.println(map);
+
             int j;
             for (int i = 0; i < len; i++) {
                 int sizeStr = str.length();
@@ -95,7 +86,6 @@ class ImageEncode {
                     flag4 = true;
                 }
             }
-            // System.out.println(bits);
             ArrayList<Integer> values = new ArrayList<>();
             for (int i = 0; i < bits.size(); i++) {
                 int value = Integer.parseInt(bits.get(i), 2);
@@ -114,8 +104,8 @@ class ImageEncode {
             if (flag4) {
                 encodedString.append('=');
             }
-            // System.out.println();
-            // System.out.println("My enrypted string");
+            System.out.println();
+            System.out.println("My enrypted string");
             System.out.println(encodedString.toString()); // my encoded string
             decodeString(encodedString.toString(), map);
             fis.close();
@@ -127,7 +117,6 @@ class ImageEncode {
     }
 
     public static void decodeString(String encodedString, HashMap<Integer, Character> map) throws IOException {
-        System.out.println("heyy??");
         ArrayList<Integer> values = new ArrayList<>();
         for (int i = 0; i < encodedString.length(); i++) {
             for (int num : map.keySet()) {
@@ -157,18 +146,12 @@ class ImageEncode {
                 }
             }
         }
-        System.out.println("heyy??");
-        byte val = (byte) Integer.parseInt("10001001", 2);
-        System.out.println(val);
 
         ArrayList<Byte> ans = new ArrayList<>();
         for (int i = 0; i < EightBit.size(); i++) {
             byte b1 = (byte) Integer.parseInt(EightBit.get(i), 2);
             ans.add(b1);
         }
-        System.out.println(ans.size());
-        System.out.println(EightBit);
-        System.out.println(ans);
         byte[] finalAns = new byte[ans.size()];
         for (int i = 0; i < ans.size(); i++) {
             finalAns[i] = ans.get(i);
